@@ -25,12 +25,6 @@
   (map (fn [phrase-vec] (string/join one-space phrase-vec))
        (partition phrase-length 1 (txt->vec txt))))
 
-;; need to adjust the filter into a loop/recur which should bail out as soon as it finds
-;; a match, but should double-track the position in aps so an entry can discount
-;; itself as a match rather than having to count
-
-;; perhaps use core.async to serialize println invocation w.r.t. to xform
-
 (defn find-dups
   ([phrase-length txt]
    (find-dups phrase-length txt identity))
