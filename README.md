@@ -5,6 +5,12 @@ dupes.clj
 
 > A tool for finding duplicate groupings of words in a large body of text.
 
+## Usage
+
+```
+lein run /path/to/big.txt 15
+```
+
 ## Copyright and License
 
 Original computer software in this distribution is Copyright &copy; 2015 by the NCCTS.<br>All rights reserved.
