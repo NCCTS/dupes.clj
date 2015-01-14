@@ -69,7 +69,6 @@
 ;; appears, which would be important for the report gen logic searchin for
 ;; originals (i.e. pre-normalized dupe instances)
 
-
 (defn all-phrases
   [min-phrase-length txt]
   (map (fn [phrase-vec] (string/join one-space phrase-vec))
