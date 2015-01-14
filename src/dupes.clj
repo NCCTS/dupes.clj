@@ -64,6 +64,10 @@
 ;; complex, but may be enough to do an apply concat counting down from (length
 ;; of text - 1) to the min phrase length
 
+;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
+;; find-dups tagging aware impl so can determine in which orig text a dupe
+;; appears
+
 (defn all-phrases
   [min-phrase-length txt]
   (map (fn [phrase-vec] (string/join one-space phrase-vec))
