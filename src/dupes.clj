@@ -133,12 +133,25 @@
                               ;; the loop-test itself is a barrier, or maybe do
                               ;; want it across all runs (i.e. of pmap)
 
-                              ;; may need to do a regex kind of thing where d is
+                              ;; may need to do a regex kind of thing where phrase is
                               ;; found in all larger-dupe texts and the latter
                               ;; are extracted (by regex) out of the original
-                              ;; text and then d is tested for existence as a
+                              ;; text and then phrase is tested for existence as a
                               ;; stand-alone smaller string in the original text
 
+                              ;; which leads to the idea that maybe the inner
+                              ;; loop-test can be dramatically simplified by
+                              ;; instead using a regex match strategy, described
+                              ;; above, which would be sufficient to determine
+                              ;; whether one or more "legit" duplicates exist;
+                              ;; but then should consider figuring out how many
+                              ;; "legit" dupes exist, so during "find original"
+                              ;; steps of report generation can know how many to
+                              ;; look for; will be important during report
+                              ;; generation search for originals to knock out
+                              ;; larger dupes from full text so don't find
+                              ;; smaller dupes in larger ones
+                              
                               (in-dups* phrase)
                               (some (fn [d]
                                       (let [tst (and (> (count d) pl)
