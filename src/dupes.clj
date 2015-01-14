@@ -77,9 +77,10 @@
 ;; eventually should write an algorithm to create a mapping from duplicates to
 ;; original phrases (any one dupe may have originals which are not equal to each
 ;; other); then should do a line,col find to map originals to their location in
-;; the original text; then should generate a report where the order is
-;; determined by earliest appearance (per line,col) with variants grouped
-;; together with the normalized string on which they matched
+;; the original text; then should generate a report (in edn format, giving
+;; totals, etc. in addition to dupe data; provide options for edn -> html, etc.)
+;; where the order is determined by earliest appearance (per line,col) with
+;; variants grouped together with the normalized string on which they matched
 
 ;; when impl'ing the "report gen" ideas above, would want to switch println to
 ;; print to stderr, so it serves more as a visual indicator that progress is
