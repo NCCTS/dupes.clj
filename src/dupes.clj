@@ -66,7 +66,9 @@
 
 ;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; find-dups tagging aware impl so can determine in which orig text a dupe
-;; appears
+;; appears, which would be important for the report gen logic searchin for
+;; originals (i.e. pre-normalized dupe instances)
+
 
 (defn all-phrases
   [min-phrase-length txt]
