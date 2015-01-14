@@ -67,7 +67,11 @@
 ;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; find-dups tagging aware impl so can determine in which orig text a dupe
 ;; appears, which would be important for the report gen logic searchin for
-;; originals (i.e. pre-normalized dupe instances)
+;; originals (i.e. pre-normalized dupe instances); for multiple inputs, need to
+;; handle the case where one whole text matches another, but can possibly
+;; generalize w/ test to that effect even in single-text case, since the whole
+;; text would be "knocked out" in the inner loop/regex test and so would
+;; trivially not produce a match
 
 (defn all-phrases
   [min-phrase-length txt]
