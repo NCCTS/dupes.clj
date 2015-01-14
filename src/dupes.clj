@@ -171,7 +171,13 @@
                               ;; moving along, so as to not keep around multiple
                               ;; potentially large strings longer than
                               ;; necessary, but will need to think about how to
-                              ;; coordinate w/ pmap and shuf-aps
+                              ;; coordinate w/ pmap and shuf-aps; rather than
+                              ;; trying to coordinate could instead do an outer
+                              ;; map around the pmap, where the outer map steps
+                              ;; over the groups of same-length phrases
+                              ;; (i.e. grouped by count of how many of same
+                              ;; length); but this will require shuf-aps to to
+                              ;; work a bit differently
 
                               (in-dups* phrase)
                               (some (fn [d]
