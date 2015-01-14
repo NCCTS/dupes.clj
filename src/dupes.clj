@@ -151,6 +151,11 @@
                               ;; generation search for originals to knock out
                               ;; larger dupes from full text so don't find
                               ;; smaller dupes in larger ones
+
+                              ;; dups and in-dups should maybe be maps with sets
+                              ;; hanging off keys which are the length of phrases
+                              ;; so can leverage that info to cache the "knock out"
+                              ;; ops described above
                               
                               (in-dups* phrase)
                               (some (fn [d]
