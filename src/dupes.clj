@@ -229,4 +229,5 @@
         len (if num (if (number? num) num (parse-int num)) 10)]
     (print-listen)
     (find-dups len txt print-and-return)
-    (async/close! print-chan)))
+    (async/close! print-chan)
+    (shutdown-agents)))
