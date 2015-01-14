@@ -153,10 +153,15 @@
                               ;; smaller dupes in larger ones
 
                               ;; dups and in-dups should maybe be maps with sets
-                              ;; hanging off keys which are the length of phrases
-                              ;; so can leverage that info to cache the "knock out"
-                              ;; ops described above
-                              
+                              ;; hanging off keys which are the length of
+                              ;; phrases so can leverage that info to cache the
+                              ;; "knock out" ops described above; may be able to
+                              ;; dissoc larger key/sets in the cache while
+                              ;; moving along, so as to not keep around multiple
+                              ;; potentially large strings longer than
+                              ;; necessary, but will need to think about how to
+                              ;; coordinate w/ pmap and shuf-aps
+
                               (in-dups* phrase)
                               (some (fn [d]
                                       (let [tst (and (> (count d) pl)
