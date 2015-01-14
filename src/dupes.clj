@@ -150,12 +150,13 @@
                               ;; above, which would be sufficient to determine
                               ;; whether one or more "legit" duplicates exist;
                               ;; but then should consider figuring out how many
-                              ;; "legit" dupes exist, so during "find original"
-                              ;; steps of report generation can know how many to
-                              ;; look for; will be important during report
-                              ;; generation search for originals to knock out
-                              ;; larger dupes from full text so don't find
-                              ;; smaller dupes in larger ones
+                              ;; "legit" dupes exist (look into re-seq
+                              ;; vs. re-find), so during "find original" steps
+                              ;; of report generation can know how many to look
+                              ;; for; will be important during report generation
+                              ;; search for originals to knock out larger dupes
+                              ;; from full text so don't find smaller dupes in
+                              ;; larger ones
 
                               ;; dups and in-dups should maybe be maps with sets
                               ;; hanging off keys which are the length of
