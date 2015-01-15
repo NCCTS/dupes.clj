@@ -64,6 +64,9 @@
 ;; complex, but may be enough to do an apply concat counting down from (length
 ;; of text - 1) to the min phrase length
 
+;; should probably support both min and max, w/ default max being the length of
+;; the orig text, and default min being 10 or 7 or whatever
+
 ;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; find-dups tagging aware impl so can determine in which orig text a dupe
 ;; appears, which would be important for the report gen logic searchin for
