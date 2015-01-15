@@ -29,8 +29,7 @@
   (if (< (- cnt (+ (* step (- mx? 1)) n)) 0)
     (+ (- mx? 1)
 
-       ;; needs work, needs generative TESTS!!!
-       ;; should work for n = 0
+       ;; needs work and generative TESTS!!!
        ;; pad rules must be more sophisticated
 
        (if pad?
@@ -74,13 +73,12 @@
 ;; for checking and not checking when there is more than one input text
 
 ;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
-;; find-dups tagging aware impl so can determine in which orig text a dupe
-;; appears, which would be important for the report gen logic searchin for
+;; impl of find-dups which is tag-aware so can determine in which orig text a
+;; dupe appears, which would be important for the report gen logic searching for
 ;; originals (i.e. pre-normalized dupe instances); for multiple inputs, need to
 ;; handle the case where one whole text matches another, but can possibly
-;; generalize w/ test to that effect even in single-text case, since the whole
-;; text would be "knocked out" in the inner loop/regex test and so would
-;; trivially not produce a match
+;; generalize w/ test to the effect that in single-text case the test is a
+;; trivial non-match
 
 (defn all-phrases
   [min-phrase-length txt]
@@ -89,8 +87,8 @@
 
 ;; eventually should write an algorithm to create a mapping from duplicates to
 ;; original phrases (any one dupe may have originals which are not equal to each
-;; other); then should do a line,col find to map originals to their location in
-;; the original text; then should generate a report (in edn format, giving
+;; other); then should do a line,col search to map originals to their location
+;; in the original text; then should generate a report (in edn format, giving
 ;; totals, etc. in addition to dupe data; provide options for edn -> html, etc.)
 ;; where the order is determined by earliest appearance (per line,col) with
 ;; variants grouped together with the normalized string on which they matched
@@ -120,11 +118,11 @@
          ;; elim of "smaller inside large" for the return val of doall (if they
          ;; were out-of-order would have to do that)
 
-         ;; all-phrases SHOULD in fact use max-steps and group a map or seq of
-         ;; tuples which indicate how big the partition group is; and the order
+         ;; all-phrases SHOULD in fact use max-steps and group a map (or seq of
+         ;; tuples) which indicate how big the partition group is; and the order
          ;; of the groups should be from largest to smallest phrase-size (not
          ;; group size); that will allow the lazy-seq described above to do its
-         ;; just much easier; but then inner loop-test should be a lazy seq map
+         ;; job much easier; but then inner loop-test should be a lazy seq map
          ;; return concat'd val which flattens the groupings
 
          shuf-aps (lazy-seq ...)
