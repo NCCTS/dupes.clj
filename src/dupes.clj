@@ -67,6 +67,12 @@
 ;; should probably support both min and max, w/ default max being the length of
 ;; the orig text, and default min being 10 or 7 or whatever
 
+;; should support option for find-dups to indicate whether or not smaller
+;; phrases should be checked for duplication inside larger phrases which are
+;; already found to be duplicated; the default would be to not do such checks as
+;; it's probably not suited to most use cases; need to think about implications
+;; for checking and not checking when there is more than one input text
+
 ;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; find-dups tagging aware impl so can determine in which orig text a dupe
 ;; appears, which would be important for the report gen logic searchin for
