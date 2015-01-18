@@ -229,10 +229,6 @@
 
 ;; ----------------------------------------------------------------------------
 
-;; see comment re: shutdown-agents w.r.t. pmap
-;; https://clojuredocs.org/clojure.core/pmap
-;; may need to invoke shutdown-agents after closing print-chan
-
 (defn -main
   [& args]
   (let [txt (norm-txt (slurp (first args)))
@@ -241,4 +237,6 @@
     (print-listen)
     (find-dups len txt print-and-return)
     (async/close! print-chan)
+    ;; see comment re: shutdown-agents w.r.t. pmap
+    ;; https://clojuredocs.org/clojure.core/pmap
     (shutdown-agents)))
