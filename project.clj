@@ -11,4 +11,8 @@
 
   :main kircher
 
-  :plugins [[cider/cider-nrepl "0.9.0-SNAPSHOT"]])
+  :profiles {:dev
+             {:dependencies [[com.cemerick/double-check "0.6.1"]]
+
+              :plugins [[cider/cider-nrepl "0.9.0-SNAPSHOT"]
+                        [com.jakemccrary/lein-test-refresh "0.5.5"]]}})
