@@ -122,7 +122,8 @@
          ;; job much easier; but then inner loop-test should be a lazy seq map
          ;; return concat'd val which flattens the groupings
 
-         shuf-aps (lazy-seq ...)
+         ;; shuf-aps (lazy-seq ...)
+         shuf-aps '()
 
          dups (atom #{})
          in-dups (atom #{})]
