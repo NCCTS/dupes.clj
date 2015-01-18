@@ -1,3 +1,3 @@
-# Introduction to dupes.clj
+# Introduction to kircher
 
 TODO: write [great documentation](http://jacobian.org/writing/what-to-write/)

@@ -1,4 +1,4 @@
-dupes.clj
+kircher
 =========
 
 [![License EPL](https://img.shields.io/badge/license-EPL-brightgreen.svg?style=flat)](http://opensource.org/licenses/EPL-1.0)
@@ -15,7 +15,7 @@ lein run /path/to/big.txt 15
 
 Original computer software in this distribution is Copyright &copy; 2015 by the NCCTS.<br>All rights reserved.
 
-The use and distribution terms for this software are covered by the [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php) which can be found in the file [epl-v10.html](http://nccts.github.io/dupes.clj/epl-v10.html) at the [root](https://github.com/NCCTS/dupes.clj/tree/master/) of this distribution. By using this software in any fashion, you are agreeing to be bound by the terms of this license. You must not remove this notice, or any other, from this software.
+The use and distribution terms for this software are covered by the [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php) which can be found in the file [epl-v10.html](http://nccts.github.io/kircher/epl-v10.html) at the [root](https://github.com/NCCTS/kircher/tree/master/) of this distribution. By using this software in any fashion, you are agreeing to be bound by the terms of this license. You must not remove this notice, or any other, from this software.
 
 ## Donations
 

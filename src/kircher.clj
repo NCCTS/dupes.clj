@@ -1,4 +1,4 @@
-(ns dupes
+(ns kircher
   (:require [clojure.core.async :as async]
             [clojure.string :as string]))
 
