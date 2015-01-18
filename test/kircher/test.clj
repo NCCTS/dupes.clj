@@ -1,6 +1,10 @@
 (ns kircher.test
-  (:require [clojure.test :refer :all]
-            [kircher :refer :all]))
+  (:require [clojure.string :as string]
+            [clojure.test.check :as tc]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
+            [clojure.test :refer :all]
+            [kircher :as k]))
 
 (deftest a-test
   (testing "FIXME, I fail."
