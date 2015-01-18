@@ -229,6 +229,12 @@
 
 ;; ----------------------------------------------------------------------------
 
+;; GUI IDEA
+;; --------
+;; look into fx-clj :: https://github.com/aaronc/fx-clj
+;; also, revisit Launch4j :: http://launch4j.sourceforge.net/
+;; and JarBundler :: http://informagen.com/JarBundler/index.html
+
 (defn -main
   [& args]
   (let [txt (norm-txt (slurp (first args)))
