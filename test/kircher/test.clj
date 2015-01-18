@@ -6,9 +6,6 @@
             [clojure.test :refer :all]
             [kircher :as k]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
 ;; ----------------------------------------------------------------------------
 
 ;; need to manually require w/in REPL context
