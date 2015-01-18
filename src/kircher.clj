@@ -43,9 +43,6 @@
 
 (defn max-steps
   [coll n step & args]
-
-  ;; needs generative TEST!!!
-
   (if (<= step 0)
     (throw (Error. "step value <= 0"))
     (let [cnt (count coll)]
