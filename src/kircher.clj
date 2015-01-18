@@ -14,11 +14,11 @@
 
 (defn norm-txt
   [txt]
-  (string/lower-case
-   (string/replace
-    (string/replace txt all-punc empty-str)
-    all-white
-    one-space)))
+  (-> txt
+      (string/replace all-punc empty-str)
+      (string/replace all-white one-space)
+      string/trim
+      string/lower-case))
 
 (defn txt->vec
   [txt]
