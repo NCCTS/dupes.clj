@@ -19,3 +19,8 @@
     (is (= (k/norm-txt "\n  \r\r   \tA   !@#\t$%^&*()-_=+\r[]{}\\|;:'\"<,>.?/b? \t\t !*@ C \n\n\n d  ")
            "a b c d"))))
 
+(deftest txt->vec
+  (testing "text to vector"
+    (is (= (k/txt->vec "a b c d")
+           ["a" "b" "c" "d"]))))
+
