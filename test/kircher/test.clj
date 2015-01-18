@@ -14,3 +14,8 @@
 ;;          '[clojure.test.check.generators :as gen]
 ;;          '[clojure.test.check.properties :as prop])
 
+(deftest norm-txt
+  (testing "normalize text"
+    (is (= (k/norm-txt "\n  \r\r   \tA   !@#\t$%^&*()-_=+\r[]{}\\|;:'\"<,>.?/b? \t\t !*@ C \n\n\n d  ")
+           "a b c d"))))
+
