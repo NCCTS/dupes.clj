@@ -35,7 +35,7 @@
            ;; wrapping in `boolean' is a hack
            ;;   http://dev.clojure.org/jira/browse/TCHECK-26
            (boolean (is (thrown? Error (k/max-steps coll n step))))
-           (boolean (is (thrown? Error (k/max-steps coll n step 'pad)))))]
+           (boolean (is (thrown? Error (k/max-steps coll n step ['pad])))))]
       (tc/quick-check 1000 zero-throws)))
 
   (testing "empty coll"
@@ -45,7 +45,7 @@
             ;; s-pos-int never gens 0 val
             step gen/s-pos-int]
            (is (= 0 (k/max-steps [] n step)))
-           (is (= 0 (k/max-steps [] n step 'pad))))]
+           (is (= 0 (k/max-steps [] n step ['pad]))))]
       (tc/quick-check 1000 empty-always-zero)))
 
   (testing "n < 0"
@@ -55,5 +55,5 @@
             n gen/s-neg-int
             step gen/s-pos-int]
            (is (= 0 (k/max-steps coll n step)))
-           (is (= 1 (k/max-steps coll n step 'pad))))]
+           (is (= 1 (k/max-steps coll n step ['pad]))))]
       (tc/quick-check 1000 n-lte-0-always-0-or-1))))
