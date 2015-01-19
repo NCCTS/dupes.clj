@@ -24,22 +24,19 @@
   [txt]
   (string/split txt (re-pattern one-space)))
 
-(defn max-steps*
-  [cnt n step mx? pad?]
-  (if (< (- cnt (+ (* step (- mx? 1)) n)) 0)
-    (+ (- mx? 1)
-
-       ;; needs work and generative TESTS!!!
-       ;; pad rules must be more sophisticated
-
-       (if pad?
-         (if (or (< step cnt) (= mx? 1))
-           1
-           0)
-         0)
-
-       )
-    (recur cnt n step (inc mx?) pad?)))
+(defn- max-steps*
+  [cnt n step mx pad?]
+  (if (and (= mx 1) (> n cnt))
+    (if pad?
+      1
+      0)
+    (if (and (= mx 1) (>= step cnt))
+      1
+      (if (< (- cnt (+ (* step (- mx 1)) n)) 0)
+        (if (and (> (- cnt (+ (* step (- mx 2)) step)) 0) pad?)
+          mx
+          (- mx 1))
+        (recur cnt n step (inc mx) pad?)))))
 
 (defn max-steps
   [coll n step & args]
