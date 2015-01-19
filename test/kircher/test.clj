@@ -57,3 +57,24 @@
            (is (= 0 (k/max-steps coll n step)))
            (is (= 1 (k/max-steps coll n step ['pad]))))]
       (tc/quick-check 1000 n-lte-0-always-0-or-1))))
+
+(def k-max-steps* @#'k/max-steps*)
+
+(deftest max-steps*
+  (testing "equiv counts for max-step* and partition"
+    (let [equiv-count
+          (prop/for-all
+           [coll (gen/vector gen/int 1 10)
+            n (gen/resize 15 gen/s-pos-int)
+            step (gen/resize 15 gen/s-pos-int)]
+           (let [cnt (count coll)
+                 mx? 1
+                 pad?-true true
+                 pad?-false false
+                 pnp (partition n step coll)
+                 pwp (partition n step ['pad] coll)]
+             (is (= (k-max-steps* cnt n step mx? pad?-false)
+                    (count pnp)))
+             (is (= (k-max-steps* cnt n step mx? pad?-true)
+                    (count pwp)))))]
+      (tc/quick-check 10000 equiv-count))))
