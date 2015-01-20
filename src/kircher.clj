@@ -318,22 +318,53 @@
 
 (defn parse-int [s]
   (Integer. (re-find  #"\d+" s )))
-
-(def print-chan (async/chan 100))
   {:pre [(string? s)]}
+  (Integer. ^String (re-find  #"\d+" s)))
+
+(defn events->console
+  [& [c]]
+  (let [events-chan (or c (async/chan 100))
+        all-size (atom nil)
+        nas "N/A"]
     (assert (chan? events-chan))
+    (async/thread
+      (loop [c events-chan]
+        (when-let [msg (async/<!! c)]
+          (let [a-s @all-size]
+            (when (nil? a-s)
+              (reset! all-size nas)
+              (async/thread
+                (reset! all-size ((:all-size msg)))))
+            (apply println
+                   [((fn [m] (if (not (integer? a-s))
+                               nas
+                               (let [a-i (:all-index m)]
+                                 (str a-i
+                                      "/"
+                                      a-s
+                                      " "
+                                      (format "%.5f"
+                                              (* 100
+                                                 (float (/ a-i a-s))))))))
+                     msg)
+                    ((fn [m] (let [g-i (:group-index m)
+                                   g-s (:group-size m)]
+                               (str g-i
+                                    "/"
+                                    g-s
+                                    " "
+                                    (format "%.5f"
+                                            (* 100
+                                               (float (/ g-i g-s)))))))
+                     msg)
+                    (int (:phrase-length msg))
+                    (:phrase msg)
+                    "\n"]))
+          (recur c))))
+    events-chan))
 
-(defn print-and-return
-  [v]
-  (async/>!! print-chan v) v)
+;; -----------------------------------------------------------------------------
 
-(defn print-listen
-  []
-  (async/thread
-    (loop [c print-chan]
-      (when-let [v (async/<!! c)]
-        (println v "\n")
-        (recur c)))))
 ;; should support supplying of more than one file name, but wil need to think
 ;; about having min,max-len supplied as cli flags; there is probably some clojure
 ;; cli builder lib for
