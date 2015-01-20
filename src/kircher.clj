@@ -47,18 +47,18 @@
   (string/split txt (re-pattern one-space)))
 
 (defn- max-steps*
-  [cnt n step mx pad?]
-  (if (and (= mx 1) (> n cnt))
-    (if pad?
-      1
-      0)
-    (if (and (= mx 1) (>= step cnt))
-      1
-      (if (< (- cnt (+ (* step (- mx 1)) n)) 0)
-        (if (and (> (- cnt (+ (* step (- mx 2)) step)) 0) pad?)
-          mx
-          (- mx 1))
-        (recur cnt n step (inc mx) pad?)))))
+  [cnt n step pad?]
+  (let [[cnt n step] (map bigint [cnt n step])]
+    (if (> n cnt)
+      (if pad?
+        1N
+        0N)
+      (if (>= step cnt)
+        1N
+        (let [mx (bigint (math/ceil (/ (- cnt (- n 1N)) step)))]
+          (if (and (> (- cnt (* mx step)) 0N) pad?)
+            (+ mx 1N)
+            mx))))))
 
 (defn max-steps
   [coll n step & args]
