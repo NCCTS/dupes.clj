@@ -6,13 +6,17 @@
 (set! *warn-on-reflection* true)
 ;; (set! *unchecked-math* :warn-on-boxed)
 
+;; -----------------------------------------------------------------------------
+
 (def all-punc #"\p{Punct}")
-
 (def all-white #"\s+")
-
 (def empty-str "")
-
 (def one-space " ")
+(def one-space-plus-word #" \S+")
+
+(def default-min-len 5)
+(def default-max-len :max)
+
 (defn chan?
   [c]
   (= clojure.core.async.impl.channels.ManyToManyChannel
