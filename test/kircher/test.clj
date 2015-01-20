@@ -24,6 +24,8 @@
     (is (= (k/norm-txt->lazy-seq "a b c d")
            ["a" "b" "c" "d"]))))
 
+(def dummy-pad ['pad])
+
 (deftest max-steps
   (testing "step <= 0"
     (let [zero-throws
