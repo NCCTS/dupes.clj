@@ -1,5 +1,6 @@
 (ns kircher
   (:require [clojure.core.async :as async]
+            [clojure.math.numeric-tower :as math]
             [clojure.string :as string]))
 
 ;; ----------------------------------------------------------------------------
