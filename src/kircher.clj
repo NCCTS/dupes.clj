@@ -36,6 +36,9 @@
 
 (defn norm-txt
   [txt]
+  {:pre [(string? txt)]
+   :post [(string? %)]}
+  ;; ------------------
   (-> txt
       (string/replace all-punc empty-str)
       (string/replace all-white one-space)
@@ -45,6 +48,12 @@
 (defn txt->vec
   [txt]
   (string/split txt (re-pattern one-space)))
+  {:pre [(string? n-txt)]
+   :post [(lazy? %)]}
+  ;; --------------------
+  {:pre [(string? n-txt)]
+   :post [(integer? %)]}
+  ;; --------------------
 
 (defn- max-steps*
   [cnt n step pad?]
@@ -62,6 +71,11 @@
 
 (defn max-steps
   [coll n step & args]
+  {:pre [(or (coll? coll) (integer? coll))
+         (integer? n)
+         (integer? step)]
+   :post [(bigint? %)]}
+  ;; -------------------------------------
   (if (<= step 0)
     (throw (Error. "step value <= 0"))
     (let [cnt (count coll)]
@@ -81,6 +95,9 @@
 
 ;; should probably support both min and max, w/ default max being the length of
 ;; the orig text, and default min being 10 or 7 or whatever
+  {:pre [(lazy? group-sizes)]
+   :post [(lazy? %)]}
+  ;; ------------------------
 
 ;; should support option for find-dups to indicate whether or not smaller
 ;; phrases should be checked for duplication inside larger phrases which are
@@ -275,11 +292,20 @@
                       (when (not= dups** dups*)
                         [pos (xform phrase)]))))))
             shuf-aps)))))
+  {:pre [(string? txt)
+         (integer? min-len)
+         (or (integer? max-len) (= :max max-len))]}
+  ;; ----------------------------------------------
+;;   {:pre [(string? txt)
+;;          (integer? min-len)
+;;          (or (integer? max-len) (= :max max-len))]}
+;;   ;; ----------------------------------------------
 
 (defn parse-int [s]
   (Integer. (re-find  #"\d+" s )))
 
 (def print-chan (async/chan 100))
+  {:pre [(string? s)]}
 
 (defn print-and-return
   [v]
