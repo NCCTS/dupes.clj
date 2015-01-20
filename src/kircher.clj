@@ -45,15 +45,25 @@
       string/trim
       string/lower-case))
 
-(defn txt->vec
-  [txt]
-  (string/split txt (re-pattern one-space)))
+(defn norm-txt->lazy-seq
+  [n-txt]
   {:pre [(string? n-txt)]
    :post [(lazy? %)]}
   ;; --------------------
+  (map string/triml (re-seq one-space-plus-word (str one-space n-txt))))
+
+(defn count-norm-txt
+  [n-txt]
   {:pre [(string? n-txt)]
    :post [(integer? %)]}
   ;; --------------------
+  (+ 1
+     (loop [cnt 0
+            sdx 0]
+       (let [fdx (. ^String n-txt (indexOf ^String one-space sdx))]
+         (if (= -1 fdx)
+           cnt
+           (recur (inc cnt) (inc fdx)))))))
 
 (defn- max-steps*
   [cnt n step pad?]
