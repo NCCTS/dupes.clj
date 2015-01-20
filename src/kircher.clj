@@ -105,6 +105,9 @@
   ;; ------------------------
   (reductions + 0 group-sizes))
 
+(defstruct phrase* :all-size :group-size :phrase-length :all-index :group-index :phrase)
+(defstruct phrase-size-group* :all-size :group-size :phrase-length :phrases)
+(defstruct all-phrases* :all-size :phrase-size-groups)
 
 ;; norm-txt->all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; impl of find-dups which is tag-aware so can determine in which orig text a
