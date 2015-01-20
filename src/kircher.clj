@@ -317,7 +317,6 @@
 ;;     (assert (chan? events))
 
 (defn parse-int [s]
-  (Integer. (re-find  #"\d+" s )))
   {:pre [(string? s)]}
   (Integer. ^String (re-find  #"\d+" s)))
 
