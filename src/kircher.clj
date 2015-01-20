@@ -338,22 +338,28 @@
 ;; about having min,max-len supplied as cli flags; there is probably some clojure
 ;; cli builder lib for
 
-;; ----------------------------------------------------------------------------
+(defn -main
+  [& [file-name min-len max-len]]
+  (let [txt (slurp file-name)
+        min-len (if min-len
+                  (if (number? min-len) min-len (parse-int min-len))
+                  default-min-len)
+        max-len (if max-len
+                  (if (number? max-len)
+                    max-len
+                    (if (or (= "max" max-len) (= ":max" max-len) (= :max max-len))
+                      :max
+                      (parse-int max-len)))
+                  default-max-len)
+        events-chan (events->console)]
+    (find-dups txt min-len max-len events-chan)
+    (async/close! events-chan)
+    ;; see comment re: shutdown-agents w.r.t. pmap
+    ;; https://clojuredocs.org/clojure.core/pmap
+    (shutdown-agents)))
 
 ;; GUI IDEA
 ;; --------
 ;; look into fx-clj :: https://github.com/aaronc/fx-clj
 ;; also, revisit Launch4j :: http://launch4j.sourceforge.net/
 ;; and JarBundler :: http://informagen.com/JarBundler/index.html
-
-(defn -main
-  [& args]
-  (let [txt (norm-txt (slurp (first args)))
-        num (second args)
-        len (if num (if (number? num) num (parse-int num)) 10)]
-    (print-listen)
-    (find-dups len txt print-and-return)
-    (async/close! print-chan)
-    ;; see comment re: shutdown-agents w.r.t. pmap
-    ;; https://clojuredocs.org/clojure.core/pmap
-    (shutdown-agents)))
