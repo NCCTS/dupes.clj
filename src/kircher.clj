@@ -98,13 +98,6 @@
               0N)
             (max-steps* cnt (if (= n 0) 1 n) step pad?)))))))
 
-;; phrase-length in all-phrases should really denote the minimum phrase length,
-;; not the max, i.e. the logic behind generating all-phrases should be more
-;; complex, but may be enough to do an apply concat counting down from (length
-;; of text - 1) to the min phrase length
-
-;; should probably support both min and max, w/ default max being the length of
-;; the orig text, and default min being 10 or 7 or whatever
 (defn group-sizes->offsets
   [group-sizes]
   {:pre [(lazy? group-sizes)]
@@ -112,13 +105,8 @@
   ;; ------------------------
   (reductions + 0 group-sizes))
 
-;; should support option for find-dups to indicate whether or not smaller
-;; phrases should be checked for duplication inside larger phrases which are
-;; already found to be duplicated; the default would be to not do such checks as
-;; it's probably not suited to most use cases; need to think about implications
-;; for checking and not checking when there is more than one input text
 
-;; all-phrases could eventually handle multiple input texts, w/ "tagging" and
+;; norm-txt->all-phrases could eventually handle multiple input texts, w/ "tagging" and
 ;; impl of find-dups which is tag-aware so can determine in which orig text a
 ;; dupe appears, which would be important for the report gen logic searching for
 ;; originals (i.e. pre-normalized dupe instances); for multiple inputs, need to
@@ -191,6 +179,12 @@
 ;; being made, then should shunt final report through stdout, while providing
 ;; addt'l optional arg to -main which indicates name of file in which to instead
 ;; save report
+
+;; should support option for find-dups to indicate whether or not smaller
+;; phrases should be checked for duplication inside larger phrases which are
+;; already found to be duplicated; the default would be to not do such checks as
+;; it's probably not suited to most use cases; need to think about implications
+;; for checking and not checking when there is more than one input text
 
 (defn find-dups
   ([min-phrase-length txt]
@@ -310,6 +304,12 @@
          (or (integer? max-len) (= :max max-len))]}
   ;; ----------------------------------------------
     (assert (chan? events))
+      ;; this is wrong, it needs to be a reduce w/ fast loops like finding " "
+      ;; above for the count-norm-txt; also, overlapping dups in the same
+      ;; phrase-size-group need to be combined before being substracted from the
+      ;; string; it seems pmap isn't worthwhile either given high contention;
+      ;; when switching to loops and reduce, should be able to avoid all use of
+      ;; atoms
 ;;   {:pre [(string? txt)
 ;;          (integer? min-len)
 ;;          (or (integer? max-len) (= :max max-len))]}
@@ -334,6 +334,9 @@
       (when-let [v (async/<!! c)]
         (println v "\n")
         (recur c)))))
+;; should support supplying of more than one file name, but wil need to think
+;; about having min,max-len supplied as cli flags; there is probably some clojure
+;; cli builder lib for
 
 ;; ----------------------------------------------------------------------------
 
