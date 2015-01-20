@@ -1,18 +1,17 @@
 (ns kircher.test
-  (:require [clojure.string :as string]
-            [clojure.test.check :as tc]
-            [clojure.test.check.generators :as gen]
-            [clojure.test.check.properties :as prop]
+  (:require [clojure.core.async :as async]
+            [clojure.math.numeric-tower :as math]
+            [clojure.string :as string]
             [clojure.test :refer :all]
             [kircher :as k]))
 
-;; ----------------------------------------------------------------------------
+;; REPL context requires ""manual"" require, for some reason
+;; ---------------------------------------------------------
+(require '[clojure.test.check :as tc]
+         '[clojure.test.check.generators :as gen]
+         '[clojure.test.check.properties :as prop])
 
-;; need to manually require w/in REPL context
-;; ------------------------------------------
-;; (require '[clojure.test.check :as tc]
-;;          '[clojure.test.check.generators :as gen]
-;;          '[clojure.test.check.properties :as prop])
+;; -----------------------------------------------------------------------------
 
 (deftest norm-txt
   (testing "normalize text"
