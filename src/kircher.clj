@@ -187,129 +187,57 @@
 ;; for checking and not checking when there is more than one input text
 
 (defn find-dups
-  ([min-phrase-length txt]
-   (find-dups min-phrase-length txt identity))
-  ([min-phrase-length txt xform]
-   (let [aps' (all-phrases min-phrase-length txt)
-         aps (partition 2 (interleave (range) aps'))
-
-         ;; maybe use a lazy-seq to return a variant of aps that grabs a random
-         ;; index but track which ones have already been grabbed, e.g. in an
-         ;; (atom #{}); pmap over the lazy-seq "shuf-aps", while the inner
-         ;; loop-test of find-dups is over aps; the shuf should be "partitioned"
-         ;; so that it shuffles within groups of phrases which are equal in
-         ;; length, with larger phrases always being returned before smaller
-         ;; phrases (e.g. with first); in that way, the inner loop-test can
-         ;; check whether a phrase has a regex match inside a larger phrase
-         ;; which is already tracked in dups set, and don't need to do another
-         ;; elim of "smaller inside large" for the return val of doall (if they
-         ;; were out-of-order would have to do that)
-
-         ;; all-phrases SHOULD in fact use max-steps and group a map (or seq of
-         ;; tuples) which indicate how big the partition group is; and the order
-         ;; of the groups should be from largest to smallest phrase-size (not
-         ;; group size); that will allow the lazy-seq described above to do its
-         ;; job much easier; but then inner loop-test should be a lazy seq map
-         ;; return concat'd val which flattens the groupings
-
-         ;; shuf-aps (lazy-seq ...)
-         shuf-aps '()
-
-         dups (atom #{})
-         in-dups (atom #{})]
-
-     ;; when impl'ing ideas for report generation, first step will be to knock out nil members
-     ;; in the return val of doall, using filter w/ #(not (nil? %))
-
-     (doall
-      (pmap (fn [[pos phrase]]
-              (let [dups* @dups
-                    in-dups* @in-dups
-                    pl (count phrase)
-                    rep (re-pattern phrase)]
-                (when-not (or (dups* phrase)
-
-                              ;; the in-dups test isn't in the right place; a
-                              ;; shorter phrase might be a legit dupe apart from
-                              ;; being a non-legit dupe w/in a larger dupe, so
-                              ;; need to figure out how to move this logic to
-                              ;; the inner loop-test, and figure out the proper
-                              ;; scope of tracking an in-dups set, e.g. maybe
-                              ;; the loop-test itself is a barrier, or maybe do
-                              ;; want it across all runs (i.e. of pmap)
-
-                              ;; may need to do a regex kind of thing where phrase is
-                              ;; found in all larger-dupe texts and the latter
-                              ;; are extracted (by regex) out of the original
-                              ;; text and then phrase is tested for existence as a
-                              ;; stand-alone smaller string in the original text
-
-                              ;; which leads to the idea that maybe the inner
-                              ;; loop-test can be dramatically simplified by
-                              ;; instead using a regex match strategy, described
-                              ;; above, which would be sufficient to determine
-                              ;; whether one or more "legit" duplicates exist;
-                              ;; but then should consider figuring out how many
-                              ;; "legit" dupes exist (look into re-seq
-                              ;; vs. re-find), so during "find original" steps
-                              ;; of report generation can know how many to look
-                              ;; for; will be important during report generation
-                              ;; search for originals to knock out larger dupes
-                              ;; from full text so don't find smaller dupes in
-                              ;; larger ones
-
-                              ;; dups and in-dups should maybe be maps with sets
-                              ;; hanging off keys which are the length of
-                              ;; phrases so can leverage that info to cache the
-                              ;; "knock out" ops described above; may be able to
-                              ;; dissoc larger key/sets in the cache while
-                              ;; moving along, so as to not keep around multiple
-                              ;; potentially large strings longer than
-                              ;; necessary, but will need to think about how to
-                              ;; coordinate w/ pmap and shuf-aps; rather than
-                              ;; trying to coordinate could instead do an outer
-                              ;; map around the pmap, where the outer map steps
-                              ;; over the groups of same-length phrases
-                              ;; (i.e. grouped by count of how many of same
-                              ;; length); but this will require shuf-aps to to
-                              ;; work a bit differently
-
-                              (in-dups* phrase)
-                              (some (fn [d]
-                                      (let [tst (and (> (count d) pl)
-                                                     (re-find rep d))]
-                                        (if tst
-                                          (do
-                                            (swap! in-dups conj phrase)
-                                            true)
-                                          false)))
-                                    dups*))
-                  (when (let [aps-same-len (filter #(= (count %) pl) aps)]
-                          (loop [tup (first aps-same-len)
-                                 aps* (rest aps-same-len)]
-                            (let [pos* (first tup)
-                                  phrase* (second tup)]
-                              (if (and (= phrase* phrase)
-                                       (not= pos* pos))
-                                phrase
-                                (when-let [aps** (seq (rest aps*))]
-                                  (recur (first aps**)
-                                         aps**))))))
-                    (let [dups** (swap! dups conj phrase)]
-                      (when (not= dups** dups*)
-                        [pos (xform phrase)]))))))
-            shuf-aps)))))
+  [txt min-len max-len & [events]]
   {:pre [(string? txt)
          (integer? min-len)
          (or (integer? max-len) (= :max max-len))]}
   ;; ----------------------------------------------
+  (let [events (or events (async/close! (async/chan)))]
     (assert (chan? events))
+    (let [n-txt (norm-txt txt)
+          txt-seq (norm-txt->lazy-seq n-txt)
+          aps (norm-txt->all-phrases n-txt min-len max-len txt-seq)
+          n-txt* (atom n-txt)]
+
       ;; this is wrong, it needs to be a reduce w/ fast loops like finding " "
       ;; above for the count-norm-txt; also, overlapping dups in the same
       ;; phrase-size-group need to be combined before being substracted from the
       ;; string; it seems pmap isn't worthwhile either given high contention;
       ;; when switching to loops and reduce, should be able to avoid all use of
       ;; atoms
+
+      (dorun
+       (map
+        (fn [p-s-g]
+          (let [dups (atom #{})]
+            (dorun
+             (map
+              (fn [dp]
+                (swap! n-txt*
+                       #(string/replace
+                         %
+                         (re-pattern (str one-space (:phrase dp)))
+                         " |")))
+              (filter
+               #(not (nil? %))
+               (doall
+                (map
+                 (fn [p]
+                   (let [dups* @dups
+                         p* (:phrase p)]
+                     (when (not (dups* p*))
+                       (let [one-space-plus-p* (re-pattern (str one-space p*))
+                             n-txt*' @n-txt*
+                             fnd (re-seq one-space-plus-p* (str one-space n-txt*'))]
+                         (when (> (count fnd) 1)
+                           (let [dups** @dups]
+                             (when (not (dups** p*))
+                               (async/>!! events p)
+                               (swap! dups conj p*)
+                               p)))))))
+                 (:phrases p-s-g))))))))
+        (:phrase-size-groups aps))))))
+
 ;; (defn find-dups
 ;;   [txt min-len max-len & [events]]
 ;;   {:pre [(string? txt)
