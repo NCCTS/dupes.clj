@@ -296,16 +296,19 @@
          (integer? min-len)
          (or (integer? max-len) (= :max max-len))]}
   ;; ----------------------------------------------
+    (assert (chan? events))
 ;;   {:pre [(string? txt)
 ;;          (integer? min-len)
 ;;          (or (integer? max-len) (= :max max-len))]}
 ;;   ;; ----------------------------------------------
+;;     (assert (chan? events))
 
 (defn parse-int [s]
   (Integer. (re-find  #"\d+" s )))
 
 (def print-chan (async/chan 100))
   {:pre [(string? s)]}
+    (assert (chan? events-chan))
 
 (defn print-and-return
   [v]
