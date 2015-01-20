@@ -15,7 +15,8 @@
 
 (deftest norm-txt
   (testing "normalize text"
-    (is (= (k/norm-txt "\n  \r\r   \tA   !@#\t$%^&*()-_=+\r[]{}\\|;:'\"<,>.?/b? \t\t !*@ C \n\n\n d  ")
+    (is (= (k/norm-txt (str "\n  \r\r   \tA   !@#\t$%^&*()-_=+\r[]{}\\|;:'\"<,>"
+                            ".?/b? \t\t !*@ C \n\n\n d  "))
            "a b c d"))))
 
 (deftest txt->vec
