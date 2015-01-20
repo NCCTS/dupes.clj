@@ -77,13 +77,46 @@
             n (gen/resize 15 gen/s-pos-int)
             step (gen/resize 15 gen/s-pos-int)]
            (let [cnt (count coll)
-                 mx? 1
                  pad?-true true
                  pad?-false false
+                 count-kms*-np (k-max-steps* cnt n step pad?-false)
+                 count-kms*-wp (k-max-steps* cnt n step pad?-true)
+                 count-kms-np (k/max-steps coll n step)
+                 count-kms-np' (k/max-steps (count coll) n step)
+                 count-kms-wp (k/max-steps coll n step dummy-pad)
+                 count-kms-wp' (k/max-steps (count coll) n step dummy-pad)
                  pnp (partition n step coll)
-                 pwp (partition n step ['pad] coll)]
-             (is (= (k-max-steps* cnt n step mx? pad?-false)
-                    (count pnp)))
-             (is (= (k-max-steps* cnt n step mx? pad?-true)
-                    (count pwp)))))]
+                 pwp (partition n step dummy-pad coll)]
+
+             ;; (when (or
+             ;;        (not (= count-kms*-np
+             ;;                count-kms-np
+             ;;                count-kms-np'
+             ;;                (bigint (count pnp))))
+             ;;        (not (= count-kms*-wp
+             ;;                count-kms-wp
+             ;;                count-kms-wp'
+             ;;                (bigint (count pwp)))))
+             ;;   (println "coll: " coll)
+             ;;   (println "[cnt n step]: " [cnt n step])
+             ;;   (println "[ALL-NP-COUNTS]: " [count-kms*-np count-kms-np count-kms-np' (bigint (count pnp))])
+             ;;   (println "[ALL-WP-COUNTS]: " [count-kms*-wp count-kms-wp count-kms-wp' (bigint (count pwp))])
+             ;;   (println "pnp: " pnp)
+             ;;   (println "pwp: " pwp))
+
+             (is (= count-kms*-np
+                    count-kms-np
+                    count-kms-np'
+                    (bigint (count pnp))))
+             (is (= count-kms*-wp
+                    count-kms-wp
+                    count-kms-wp'
+                    (bigint (count pwp))))
+             (is (= clojure.lang.BigInt
+                    (type count-kms*-np)
+                    (type count-kms*-wp)
+                    (type count-kms-np)
+                    (type count-kms-np')
+                    (type count-kms-wp)
+                    (type count-kms-wp')))))]
       (tc/quick-check 10000 equiv-count))))
