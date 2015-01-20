@@ -13,6 +13,22 @@
 (def empty-str "")
 
 (def one-space " ")
+(defn chan?
+  [c]
+  (= clojure.core.async.impl.channels.ManyToManyChannel
+     (type c)))
+
+(defn bigint?
+  [n]
+  (= clojure.lang.BigInt
+     (type n)))
+
+(defn lazy?
+  [xs]
+  (or (= clojure.lang.LazySeq
+         (type xs))
+      (= clojure.lang.Cons
+         (type xs))))
 
 (defn norm-txt
   [txt]
