@@ -105,9 +105,12 @@
 
 ;; should probably support both min and max, w/ default max being the length of
 ;; the orig text, and default min being 10 or 7 or whatever
+(defn group-sizes->offsets
+  [group-sizes]
   {:pre [(lazy? group-sizes)]
    :post [(lazy? %)]}
   ;; ------------------------
+  (reductions + 0 group-sizes))
 
 ;; should support option for find-dups to indicate whether or not smaller
 ;; phrases should be checked for duplication inside larger phrases which are
