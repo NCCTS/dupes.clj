@@ -96,10 +96,57 @@
 ;; generalize w/ test to the effect that in single-text case the test is a
 ;; trivial non-match
 
-(defn all-phrases
-  [min-phrase-length txt]
-  (map (fn [phrase-vec] (string/join one-space phrase-vec))
-       (partition min-phrase-length 1 (txt->vec txt))))
+(defn norm-txt->all-phrases
+  [n-txt min-len max-len & [txt-seq]]
+  {:pre [(string? n-txt)
+         (integer? min-len)
+         (or (integer? max-len) (= :max max-len))]
+   :post [(clojure.test/function? (:all-size %))
+          (lazy? (:phrase-size-groups %))]}
+  ;; ---------------------------------------------
+  (let [txt-seq (or txt-seq (norm-txt->lazy-seq n-txt))]
+    (let [cnt-txt-seq (count-norm-txt n-txt)
+          max-len (if (= max-len :max) cnt-txt-seq max-len)
+          max->min (range max-len (- min-len 1) -1)
+          step-1 1
+          group-sizes (map (fn [n] (max-steps cnt-txt-seq n step-1))
+                           max->min)
+          offsets (group-sizes->offsets group-sizes)
+          all-size (fn [] (reduce + 0N group-sizes))]
+      (struct all-phrases*
+              all-size
+              (map (fn [[group-size offset n]]
+                     (let [phrase-length (bigint n)
+                           p-s-g
+                           (struct phrase-size-group*
+                                   all-size
+                                   group-size
+                                   phrase-length
+                                   (map (fn [[i phrase-vec]]
+                                          (let [i (bigint i)
+                                                p (struct phrase*
+                                                          all-size
+                                                          group-size
+                                                          phrase-length
+                                                          (+ i offset)
+                                                          i
+                                                          (string/join
+                                                           one-space
+                                                           phrase-vec))]
+                                            (assert (bigint? (:all-index p)))
+                                            (assert (bigint? (:group-index p)))
+                                            p))
+                                        (partition
+                                         2
+                                         (interleave (range group-size)
+                                                     (partition n
+                                                                step-1
+                                                                txt-seq)))))]
+                       (assert (bigint? (:group-size p-s-g)))
+                       (assert (bigint? (:phrase-length p-s-g)))
+                       (assert (lazy? (:phrases p-s-g)))
+                       p-s-g))
+                   (partition 3 (interleave group-sizes offsets max->min)))))))
 
 ;; eventually should write an algorithm to create a mapping from duplicates to
 ;; original phrases (any one dupe may have originals which are not equal to each
