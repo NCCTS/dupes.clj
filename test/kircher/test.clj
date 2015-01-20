@@ -19,9 +19,9 @@
                             ".?/b? \t\t !*@ C \n\n\n d  "))
            "a b c d"))))
 
-(deftest txt->vec
+(deftest norm-txt->lazy-seq
   (testing "text to vector"
-    (is (= (k/txt->vec "a b c d")
+    (is (= (k/norm-txt->lazy-seq "a b c d")
            ["a" "b" "c" "d"]))))
 
 (deftest max-steps
