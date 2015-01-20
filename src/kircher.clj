@@ -3,7 +3,8 @@
             [clojure.math.numeric-tower :as math]
             [clojure.string :as string]))
 
-;; ----------------------------------------------------------------------------
+(set! *warn-on-reflection* true)
+;; (set! *unchecked-math* :warn-on-boxed)
 
 (def all-punc #"\p{Punct}")
 
