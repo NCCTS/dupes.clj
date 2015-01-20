@@ -88,15 +88,15 @@
   ;; -------------------------------------
   (if (<= step 0)
     (throw (Error. "step value <= 0"))
-    (let [cnt (count coll)]
+    (let [cnt (if (integer? coll) coll (count coll))]
       (if (= cnt 0)
-        0
+        0N
         (let [pad? (if (seq args) true false)]
           (if (< n 0)
             (if pad?
-              1
-              0)
-            (max-steps* cnt (if (= n 0) 1 n) step 1 pad?)))))))
+              1N
+              0N)
+            (max-steps* cnt (if (= n 0) 1 n) step pad?)))))))
 
 ;; phrase-length in all-phrases should really denote the minimum phrase length,
 ;; not the max, i.e. the logic behind generating all-phrases should be more
